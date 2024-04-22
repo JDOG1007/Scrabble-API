@@ -25,7 +25,5 @@ def home():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
     app.config['SECRET_key'] = 'a'
-
     app.run
