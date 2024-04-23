@@ -12,9 +12,9 @@ FORMAT = 'utf-8'
 DISCONNNECT_MESSAGE = "!DISCONNECT"
 INIT_MESSAGE = "!INIT"
 ENTER_NAME = "EN"
-VIEW_PLAYER = "!PLAYER LIST"
-
-
+COMMAND_LIST = f"{DISCONNNECT_MESSAGE}"
+START_MATCH = "!START"
+CHALLENGE_REQ = "You have been challenged type Y to continue"
 playerlist = {}
 
 
@@ -35,6 +35,10 @@ def receive(conn):
         return msg
 
 
+def game(p1, p2):
+    send(CHALLENGE_REQ, p2)
+
+
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
     connected = True
@@ -44,11 +48,17 @@ def handle_client(conn, addr):
             if msg == DISCONNNECT_MESSAGE:
                 connected = False
             if msg == INIT_MESSAGE:
-                send(ENTER_NAME, conn)
                 name = receive(conn)
-                playerlist[name] = addr
+                playerlist[name] = [conn, addr]
                 print(playerlist)
-
+            if msg == START_MATCH:
+                names = ""
+                for name in playerlist.keys():
+                    names += name + " "
+                send(names, conn)
+                name = receive(conn)
+                print(name)
+                game(conn, playerlist[name][0])
     conn.close()
 
 
