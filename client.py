@@ -13,6 +13,8 @@ CHALLENGE_REQ = "You have been challenged type Y to continue"
 COMMAND_LIST = [INIT_MESSAGE, DISCONNECT_MESSAGE, "!HELP", START_MATCH]
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
+START_MESSAGE = "U HAVE BEEN STARTED WITH"
+msgs = []
 
 
 def send(msg2):
@@ -21,6 +23,7 @@ def send(msg2):
     send_length = str(msg_length).encode(FORMAT)
     send_length += b' ' * (HEADER - len(send_length))
     client.send(send_length)
+
     client.send(message)
 
 
@@ -29,6 +32,11 @@ def receive():
     if msg_length:
         msg_length = int(msg_length)
         msg1 = client.recv(msg_length).decode(FORMAT)
+        if msg1 == CHALLENGE_REQ:
+            if input(f"{CHALLENGE_REQ}: ") == "Y":
+                play_game(2)
+            else:
+                print("Match declined")
         return msg1
 
 
@@ -38,14 +46,13 @@ connect = True
 
 
 def play_game(pn):
-    pass
+    if pn == 1:
+        send(input("Enter Text to send to Opponent"))
+    else:
+        print(f"Enemy player says: {receive()}")
 
 
 while connect:
-    #if receive():
-     #   ans = input(CHALLENGE_REQ)
-       # if ans == 'Y':
-      #      play_game(2)
     print("")
     msg = input("Please enter a command. Type !HELP for a list of possible commands: ")
     print("")
@@ -78,6 +85,7 @@ while connect:
             print(f"Please enter the name of your opponent. Opponents online: {names}")
             print("")
             name = input()
+            print("")
             print(f"Game started with {name}")
             send(name)
             play_game(1)

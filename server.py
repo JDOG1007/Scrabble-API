@@ -11,6 +11,7 @@ server.bind(ADDR)
 FORMAT = 'utf-8'
 DISCONNNECT_MESSAGE = "!DISCONNECT"
 INIT_MESSAGE = "!INIT"
+START_MESSAGE = "U HAVE BEEN STARTED WITH"
 ENTER_NAME = "EN"
 COMMAND_LIST = f"{DISCONNNECT_MESSAGE}"
 START_MATCH = "!START"
@@ -37,6 +38,8 @@ def receive(conn):
 
 def game(p1, p2):
     send(CHALLENGE_REQ, p2)
+    tts = receive(p1)
+    print(tts)
 
 
 def handle_client(conn, addr):
@@ -49,7 +52,7 @@ def handle_client(conn, addr):
                 connected = False
             if msg == INIT_MESSAGE:
                 name = receive(conn)
-                playerlist[name] = [conn, addr]
+                playerlist[name] = [conn]
                 print(playerlist)
             if msg == START_MATCH:
                 names = ""
